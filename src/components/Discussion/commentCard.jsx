@@ -3,7 +3,7 @@ import { AiFillDelete } from "react-icons/ai";
 import parse from "html-react-parser";
 import Reply from "./reply";
 
-var imageUrlRegex = /\b(https?:\/\/[^\s]+)/g;
+const imageUrlRegex = /\b(https?:\/\/[^\s]+)/g;
 
 const CommentCard = ({ value, deleteComment }) => {
   const { _id, name, rating, content } = value;
@@ -13,32 +13,25 @@ const CommentCard = ({ value, deleteComment }) => {
   const [toggle, setToggle] = useState(true);
   const [replyBox, setReplyBox] = useState(false);
 
-  function addReply(name, comment) {
-    setReply((prevReply) => [...prevReply, { name, comment }]);
-    setIsOpen(!isOpen);
-  }
-
-  const deleteReply = (index) => {
-    const deleteList = [...reply];
-    deleteList.splice(index, 1);
-    setReply(deleteList);
+  const addReply = (name, comment) => {
+    setReply((prev) => [...prev, { name, comment }]);
+    setIsOpen(false);
   };
 
-  const imageUrl = content?.match(imageUrlRegex);
+  const deleteReply = (index) => {
+    setReply((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const imageUrl = content?.match(imageUrlRegex)?.[0];
 
   return (
     <>
       <div className="comment-boxes">
         <div className="review">
           <div className="top-area">
-            <div className="comment-left" key={_id}>
-              <div className="name" data-testid="names">
-                {name}
-              </div>
-
-              <div className="rating" data-testid="ratings">
-                {rating}⭐️
-              </div>
+            <div className="comment-left">
+              <div className="name" data-testid="names">{name}</div>
+              <div className="rating" data-testid="ratings">{rating}⭐️</div>
             </div>
 
             <div
@@ -51,7 +44,7 @@ const CommentCard = ({ value, deleteComment }) => {
           </div>
 
           {toggle && (
-            <div>
+            <>
               <div className="comment" data-testid="comments">
                 {parse(content?.replace(imageUrlRegex, ""))}
               </div>
@@ -59,9 +52,8 @@ const CommentCard = ({ value, deleteComment }) => {
               {imageUrl && (
                 <img
                   src={imageUrl}
-                  alt="comment image"
-                  data-testid="image-preview"
-                  className={imageUrl ? "image-text-editor" : ""}
+                  alt="comment"
+                  className="image-text-editor"
                   style={{ width: "150px" }}
                 />
               )}
@@ -88,15 +80,15 @@ const CommentCard = ({ value, deleteComment }) => {
                   <AiFillDelete />
                 </button>
               </div>
-            </div>
+            </>
           )}
         </div>
       </div>
 
       {isOpen && <Reply onAdd={addReply} />}
 
-      {reply?.map(({ id, name, comment }, index) => (
-        replyBox && (
+      {replyBox &&
+        reply.map(({ name, comment }, index) => (
           <div className="reply-section" key={index}>
             <div className="comment-boxes">
               <div className="review">
@@ -104,23 +96,20 @@ const CommentCard = ({ value, deleteComment }) => {
                   <div className="name">{name}</div>
                 </div>
 
-                <div>
-                  <div className="comment">{parse(comment)}</div>
+                <div className="comment">{parse(comment)}</div>
 
-                  <div className="buttons">
-                    <button
-                      className="delete"
-                      onClick={() => deleteReply(index)}
-                    >
-                      <AiFillDelete />
-                    </button>
-                  </div>
+                <div className="buttons">
+                  <button
+                    className="delete"
+                    onClick={() => deleteReply(index)}
+                  >
+                    <AiFillDelete />
+                  </button>
                 </div>
               </div>
             </div>
           </div>
-        )
-      ))}
+        ))}
     </>
   );
 };
