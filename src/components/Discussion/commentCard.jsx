@@ -30,13 +30,12 @@ const CommentCard = ({ value, deleteComment }) => {
         <div className="review">
           <div className="top-area">
             <div className="comment-left">
-              <div className="name" data-testid="names">{name}</div>
-              <div className="rating" data-testid="ratings">{rating}⭐️</div>
+              <div className="name">{name}</div>
+              <div className="rating">{rating}⭐️</div>
             </div>
 
             <div
               className="add-icon"
-              data-testid="toggle-btn"
               onClick={() => setToggle(!toggle)}
             >
               {toggle ? "-" : "+"}
@@ -45,7 +44,7 @@ const CommentCard = ({ value, deleteComment }) => {
 
           {toggle && (
             <>
-              <div className="comment" data-testid="comments">
+              <div className="comment">
                 {parse(content?.replace(imageUrlRegex, ""))}
               </div>
 
@@ -64,16 +63,14 @@ const CommentCard = ({ value, deleteComment }) => {
                   className="reply"
                   onClick={() => setIsOpen(!isOpen)}
                 >
-                  <div className="reply-btn">Reply</div>
+                  Reply
                 </button>
 
-                <button className="reply-count">
-                  <div
-                    className="view-reply"
-                    onClick={() => setReplyBox(!replyBox)}
-                  >
-                    {replyBox ? "Hide Reply" : "Show Reply"} ({reply.length})
-                  </div>
+                <button
+                  className="reply-count"
+                  onClick={() => setReplyBox(!replyBox)}
+                >
+                  {replyBox ? "Hide Reply" : "Show Reply"} ({reply.length})
                 </button>
 
                 <button className="delete" onClick={deleteComment}>
